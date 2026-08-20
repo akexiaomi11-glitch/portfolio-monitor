@@ -1,0 +1,16 @@
+﻿หน้าสร้าง OAuth client เปิดอยู่แล้วครับ เพื่อหลีกเลี่ยงปัญหาหน้า Google Cloud รีโหลดระหว่างกรอกข้อมูล กรุณาดำเนินการในหน้านี้โดยตรงตามขั้นตอนต่อไปนี้:
+ที่ Application type เลือก Web application.
+ตั้งชื่อเป็น Portfolio Monitor Web.
+ไม่ต้องเพิ่ม Authorized JavaScript origins.
+ใต้ Authorized redirect URIs กด Add URI แล้ววางค่านี้: https://portfoliomon-cvykjc74.manus.space/api/auth/google/callback
+กด Create.
+หลัง Google แสดง Client ID และ Client Secret โปรดอย่าใส่ลงในแชต ให้แจ้งผมก่อน แล้วผมจะเปิดช่องกรอกแบบปลอดภัยในโปรเจกต์ให้ครับ
+
+Client ID
+543772690974-ka1lod0jbs031q498ktmefiivfami7t4.apps.googleusercontent.com
+
+Client Secret
+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
+
+
+postgresql://postgres.nwtbcbgsvmmxjevjiruq:[d]y[[hkoiydivvp^j]@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres

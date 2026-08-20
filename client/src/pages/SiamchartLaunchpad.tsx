@@ -1,0 +1,48 @@
+import DashboardLayout from "@/components/DashboardLayout";
+import { Input } from "@/components/ui/input";
+import { buildSiamchartTabRequests, filterSiamchartLaunchpadFunds, getSiamchartLaunchStatusMessage, siamchartLaunchpadFunds, type LaunchpadCategory } from "@shared/siamchartLaunchpad";
+import { BarChart3, ChevronDown, ExternalLink, Filter, Globe2, Search, ShieldAlert, Sparkles, TrendingUp } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Link } from "wouter";
+
+const categories: { value: LaunchpadCategory | "all"; label: string }[] = [
+  { value: "all", label: "ทั้งหมด" },
+  { value: "technology", label: "เทคโนโลยี" },
+  { value: "us_equity", label: "US Equity" },
+  { value: "fixed_income", label: "ตราสารหนี้" },
+  { value: "global_growth", label: "Global Growth" },
+];
+
+const categoryStyle: Record<LaunchpadCategory, { label: string; className: string; dot: string }> = {
+  technology: { label: "เทคโนโลยี", className: "bg-[#EEF0FF] text-[#4A54A6]", dot: "bg-[#6674D9]" },
+  us_equity: { label: "US Equity", className: "bg-[#EAF4F8] text-[#286778]", dot: "bg-[#3E98AD]" },
+  fixed_income: { label: "ตราสารหนี้", className: "bg-[#F4EFE4] text-[#8A6A27]", dot: "bg-[#C49A3E]" },
+  global_growth: { label: "Global Growth", className: "bg-[#F5EAF1] text-[#8A3766]", dot: "bg-[#B55E91]" },
+};
+
+export default function SiamchartLaunchpad() {
+  const [category, setCategory] = useState<LaunchpadCategory | "all">("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [launchMessage, setLaunchMessage] = useState("");
+  const [isPopupHelpOpen, setPopupHelpOpen] = useState(false);
+  const funds = useMemo(() => filterSiamchartLaunchpadFunds(siamchartLaunchpadFunds, category, searchTerm), [category, searchTerm]);
+
+  const openAllVisibleCharts = () => {
+    const openedTabs = buildSiamchartTabRequests(funds).flatMap(request => {
+      const tab = window.open("about:blank", request.target);
+      if (!tab) return [];
+
+      tab.location.replace(request.url);
+      return [tab];
+    });
+
+    setLaunchMessage(getSiamchartLaunchStatusMessage(openedTabs.length, funds.length));
+  };
+
+  return <DashboardLayout><div className="mx-auto max-w-[1360px] px-4 py-7 sm:px-7 lg:px-10 lg:py-10"><section className="border-b border-[#E4DED2] pb-7"><div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between"><div className="max-w-3xl"><div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#A17E37]"><Globe2 className="h-3.5 w-3.5" />External chart workspace</div><h1 className="mt-2 font-serif text-3xl font-semibold tracking-[-0.035em] text-[#17342D] sm:text-4xl">External Chart</h1><p className="mt-3 text-sm leading-6 text-[#68736D]">สแกนกองทุนที่ต้องการในหน้ากริดเดียว แล้วเปิดกราฟ Siamchart เฉพาะรายการหรือทั้งกลุ่มในแท็บใหม่ได้ทันที</p></div><div className="flex items-center gap-3 rounded-2xl border border-[#E6D5A9] bg-[#FFF9EC] px-4 py-3 text-sm text-[#79602B]"><ShieldAlert className="h-5 w-5 shrink-0 text-[#AD7B24]" /><p>กราฟเป็นข้อมูลจากเว็บไซต์ภายนอกและอาจมีเงื่อนไขการแสดงผลของผู้ให้บริการ</p></div></div></section>
+    <section className="mt-7 rounded-3xl border border-[#E7E0D4] bg-white p-5 shadow-[0_14px_30px_rgba(32,54,45,0.035)] sm:p-6"><div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"><div><p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#A17E37]">Quick launch</p><h2 className="mt-1 font-serif text-xl font-semibold text-[#17342D]">เลือกกลุ่มแล้วเปิดกราฟพร้อมกัน</h2></div><div className="relative w-full lg:max-w-xs"><Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#81908A]" /><Input value={searchTerm} onChange={event => setSearchTerm(event.target.value)} placeholder="ค้นหาชื่อกองทุนหรือ บลจ." className="h-11 rounded-xl border-[#E1DBD0] pl-10 text-sm" /></div></div><div className="mt-5 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between"><div className="flex flex-wrap gap-2">{categories.map(item => <button key={item.value} onClick={() => { setCategory(item.value); setLaunchMessage(""); }} className={`rounded-full px-3.5 py-2 text-xs font-semibold transition-colors ${category === item.value ? "bg-[#17342D] text-white" : "border border-[#E1DBD0] bg-[#FDFCF8] text-[#65736C] hover:bg-[#F3F0E8]"}`}>{item.label}{item.value === "all" && <span className="ml-1.5 opacity-70">{siamchartLaunchpadFunds.length}</span>}</button>)}</div><div className="flex flex-col gap-2 sm:flex-row"><Link href="/compare" className="flex h-11 items-center justify-center gap-2 rounded-xl border border-[#D9D2C5] bg-[#FDFCF8] px-4 text-sm font-semibold text-[#17342D] transition-colors hover:bg-[#F3F0E8]"><BarChart3 className="h-4 w-4" />เปรียบเทียบในแอป</Link><button onClick={openAllVisibleCharts} disabled={funds.length === 0} className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#17342D] px-4 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(23,52,45,0.16)] transition-colors hover:bg-[#2A4C43] disabled:cursor-not-allowed disabled:opacity-45"><ExternalLink className="h-4 w-4" />เปิดกราฟทั้งหมด ({funds.length} แท็บ)</button></div></div><div className="mt-4 rounded-2xl border border-[#E2D8B8] bg-[#FFF9EC] text-xs leading-5 text-[#765F2D]"><button type="button" onClick={() => setPopupHelpOpen(open => !open)} aria-expanded={isPopupHelpOpen} className="flex w-full items-center justify-between gap-3 p-4 text-left font-semibold text-[#644D1D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#C59A42]"><span>หากเปิดได้ไม่ครบ: อนุญาต pop-up แล้วกดปุ่มนี้อีกครั้ง</span><span className="flex shrink-0 items-center gap-1 text-[11px] text-[#8A6D35]">{isPopupHelpOpen ? "ซ่อนรายละเอียด" : "ดูวิธีตั้งค่า"}<ChevronDown className={`h-4 w-4 transition-transform ${isPopupHelpOpen ? "rotate-180" : ""}`} /></span></button>{isPopupHelpOpen && <div className="grid gap-3 border-t border-[#E6D8B7] px-4 pb-4 pt-3 sm:grid-cols-2"><p><span className="font-semibold text-[#644D1D]">Chrome / Edge:</span> กดไอคอน pop-up ที่ถูกบล็อกในแถบที่อยู่ แล้วเลือก “Always allow … from this site”</p><p><span className="font-semibold text-[#644D1D]">Firefox:</span> Settings &gt; Privacy &amp; Security &gt; Permissions &gt; Pop-up Blocker &gt; Exceptions แล้วเพิ่มเว็บไซต์นี้</p></div>}</div>{launchMessage && <p role="status" className="mt-3 rounded-xl bg-[#EEF5F0] px-3 py-2.5 text-xs leading-5 text-[#256047]">{launchMessage}</p>}</section>
+    <section className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">{funds.map(fund => { const style = categoryStyle[fund.category]; return <article key={fund.symbol} className="group rounded-3xl border border-[#E7E0D4] bg-white p-5 shadow-[0_12px_26px_rgba(32,54,45,0.035)] transition-all hover:-translate-y-0.5 hover:border-[#CCB87C] hover:shadow-[0_18px_32px_rgba(32,54,45,0.08)]"><div className="flex items-start justify-between gap-3"><div className="flex items-center gap-3"><div className="grid h-11 w-11 place-items-center rounded-2xl bg-[#EEF5F0] text-[#176244]"><BarChart3 className="h-5 w-5" /></div><div><p className="font-serif text-xl font-semibold tracking-[-0.02em] text-[#17342D]">{fund.symbol}</p><p className="mt-0.5 text-xs text-[#75827B]">{fund.provider}</p></div></div><span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold ${style.className}`}><span className={`h-1.5 w-1.5 rounded-full ${style.dot}`} />{style.label}</span></div><div className="mt-6 rounded-2xl bg-[#F8F7F2] p-4"><div className="flex items-center justify-between"><p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7D8982]">Siamchart</p><TrendingUp className="h-4 w-4 text-[#A17E37]" /></div><p className="mt-2 text-sm leading-6 text-[#56645E]">เปิดดูกราฟ NAV และข้อมูลเชิงเทคนิคจากหน้าแหล่งข้อมูลภายนอก</p></div><a href={fund.url} target="_blank" rel="noreferrer" className="mt-5 flex h-11 items-center justify-center gap-2 rounded-xl bg-[#17342D] text-sm font-semibold text-white transition-colors hover:bg-[#2A4C43] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8B76A]"><ExternalLink className="h-4 w-4" />เปิดกราฟ Siamchart</a></article>; })}</section>
+    {funds.length === 0 && <section className="mt-5 rounded-3xl border border-dashed border-[#D9D2C6] bg-white px-6 py-14 text-center"><Filter className="mx-auto h-8 w-8 text-[#A17E37]" /><h2 className="mt-4 font-serif text-xl font-semibold text-[#17342D]">ไม่พบกองทุนที่ตรงกับตัวกรอง</h2><p className="mt-2 text-sm text-[#718078]">ลองค้นหาด้วยชื่อกองทุนหรือชื่อ บลจ. อื่น</p></section>}
+    <section className="mt-6 grid gap-4 lg:grid-cols-3"><div className="rounded-2xl bg-[#EEF5F0] p-5"><Sparkles className="h-5 w-5 text-[#176244]" /><p className="mt-3 font-semibold text-[#17342D]">1. สแกนรายการ</p><p className="mt-1 text-sm leading-6 text-[#647169]">ใช้ประเภทกองทุนและการค้นหาเพื่อลดรายการที่ต้องดู</p></div><div className="rounded-2xl bg-[#F9F3E5] p-5"><ExternalLink className="h-5 w-5 text-[#9D7529]" /><p className="mt-3 font-semibold text-[#17342D]">2. เปิดกราฟเฉพาะรายการ</p><p className="mt-1 text-sm leading-6 text-[#647169]">เปิดในแท็บใหม่ จึงยังเก็บหน้า Launchpad ไว้เทียบรายการอื่นได้</p></div><div className="rounded-2xl bg-[#F2F0FA] p-5"><Globe2 className="h-5 w-5 text-[#6555A4]" /><p className="mt-3 font-semibold text-[#17342D]">3. กลับมาดูประวัติในแอป</p><p className="mt-1 text-sm leading-6 text-[#647169]">ใช้ประวัติในแอปสำหรับการดูข้อมูลที่รวม Stock และ Provident Fund ต่อเนื่อง</p></div></section>
+  </div></DashboardLayout>;
+}
