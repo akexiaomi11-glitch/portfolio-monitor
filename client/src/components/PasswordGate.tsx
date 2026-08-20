@@ -32,7 +32,7 @@ export default function PasswordGate({ children }: { children: React.ReactNode }
     <div className="grid min-h-screen place-items-center bg-[#F7F6F1] px-4">
       <div className="w-full max-w-sm rounded-3xl border border-[#E7E0D4] bg-white p-8 shadow-[0_14px_30px_rgba(32,54,45,0.08)]">
         <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#D8B76A] text-[#17342D]"><LockKeyhole className="h-6 w-6" /></div>
-        <h1 className="mt-5 font-serif text-2xl font-semibold text-[#17342D]">Portfolio Monitor</h1>
+        <h1 className="mt-5 font-serif text-2xl font-semibold text-[#17342D]">SK-Port Monitor</h1>
         <p className="mt-1 text-sm text-[#68736D]">ใส่รหัสผ่านเพื่อเข้าใช้งาน</p>
         <form onSubmit={submit} className="mt-6 grid gap-4">
           <div>

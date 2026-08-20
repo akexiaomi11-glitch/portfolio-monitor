@@ -75,7 +75,7 @@ function PortfolioSidebar({ children }: { children: React.ReactNode }) {
         <SidebarHeader className="px-4 pt-6 pb-5">
           <div className="flex items-center gap-3">
             <div className="grid h-10 w-10 place-items-center rounded-2xl bg-[#D8B76A] text-[#17342D] shadow-[0_10px_24px_rgba(216,183,106,0.22)]"><BarChart3 className="h-5 w-5" /></div>
-            <div className="min-w-0"><p className="font-serif text-[17px] font-semibold tracking-[-0.02em]">Portfolio Monitor</p><p className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.18em] text-[#D8B76A]">Daily investing</p></div>
+            <div className="min-w-0"><p className="font-serif text-[17px] font-semibold tracking-[-0.02em]">SK-Port Monitor</p><p className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.18em] text-[#D8B76A]">Daily investing</p></div>
           </div>
         </SidebarHeader>
 
@@ -155,7 +155,7 @@ function PortfolioSidebar({ children }: { children: React.ReactNode }) {
         {isMobile && (
           <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-[#E6E1D6] bg-[#F7F6F1]/95 px-4 backdrop-blur">
             <SidebarTrigger className="h-9 w-9 rounded-xl border border-[#E6E1D6] bg-white text-[#17342D]" />
-            <div><p className="font-serif text-base font-semibold text-[#17342D]">Portfolio Monitor</p><p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8A938C]">Daily snapshot</p></div>
+            <div><p className="font-serif text-base font-semibold text-[#17342D]">SK-Port Monitor</p><p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8A938C]">Daily snapshot</p></div>
           </header>
         )}
         <main className="min-h-screen flex-1">{children}</main>
