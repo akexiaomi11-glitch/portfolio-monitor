@@ -5,9 +5,7 @@ import { createContext } from "./context";
 
 // Builds the API-only Express app (tRPC + body parsing, no static/Vite
 // serving). Shared by the local dev/traditional server entry
-// (server/_core/index.ts) and the Vercel serverless entry (api/index.ts) —
-// Vercel serves the built frontend from its CDN separately, so this app only
-// ever needs to handle /api/* requests there.
+// (server/_core/index.ts) and the Vercel serverless entry (server/_core/vercelEntry.ts).
 export function createApiApp() {
   const app = express();
   app.use(express.json({ limit: "50mb" }));
